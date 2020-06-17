@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./js/jquery-3.4.1.js"></script>
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100%;
+        background-image: url("./images/bbgm.jpg");
+        background-size: contain;
+    }
+    .stage {
+        width: 150px;
+        height: 150px;
+        perspective: 1000px;
+        margin: 200px auto 0;
+    }
+
+    .img-list {
+        position: relative;
+        transform-style: preserve-3d;
+        width: 100%;
+        height: 100%;
+    }
+
+    .img-list img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        box-shadow: 0 0 5px 0;
+    }
+    .tray{
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -300px;
+        margin-top: -50px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(rgba(102, 0, 204, 0.5) 30%, rgba(0, 0, 0, 0) 80%);
+        border-radius: 50%;
+    }
+</style>
+<body>
+<div class="login">
+    <div class="stage">
+        <div class="img-list">
+            <img src="./images/pic1.jpg" alt="">
+            <img src="./images/pic2.jpg" alt="">
+            <img src="./images/pic3.jpg" alt="">
+            <img src="./images/pic4.jpg" alt="">
+            <img src="./images/pic5.jpg" alt="">
+            <img src="./images/pic6.jpg" alt="">
+            <img src="./images/pic7.jpg" alt="">
+            <img src="./images/pic8.jpg" alt="">
+            <div class="tray"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+  var InfiniteRotation = null;
+  var shrinkTimeout = null;
+  var infinite = null;
+  $(function () {
+    $('.tray').css({'transform': 'rotateX(90deg)'});
+    var imgLists = $('.img-list img');
+    var len = imgLists.length;
+    var tray = $('.img-list');
+    var deg = 360 / len;
+    licensePicture(imgLists, tray, len, deg);
+  });
+
+  /* 图片发牌旋转 */
+  function licensePicture(pics, tray, len, deg) {
+    clearTimeout(infinite);
+    pics.each(function (i) {
+      $(this).css({
+        'transition': 'transform 1s linear ' + (len - 1 - i) * 0.5 + 's',
+        'transform': 'rotateY(' + deg * i + 'deg) translateZ(300px)',
+      })
+    });
+    var point = 0;
+    InfiniteRotation = setInterval(function () {
+      point += 1;
+      var step = point * 0.2;
+      tray.css({'transform': 'rotateX(-10deg) rotateY(' + step + 'deg)'})
+    }, 30);
+
+    shrinkTimeout = setTimeout(function () {
+      pics.each(function (i) {
+        $(this).css({
+          'transition': 'transform 1s linear ' + (len - 1 - i) * 0.5 + 's',
+          'transform': 'rotateY(0deg) translateZ(0px)',
+        })
+      });
+      infinite = setTimeout(function () {
+        clearInterval(InfiniteRotation);
+        clearTimeout(shrinkTimeout);
+        licensePicture(pics, tray, len, deg);
+      }, (len-3.5)*1000)
+    }, 30 * (360 / 0.2))
+  }
+
+</script>
+</html>
